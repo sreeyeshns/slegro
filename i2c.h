@@ -1,6 +1,9 @@
 #ifndef _I2C_H
 #define _I2C_H
 
+#define I2C_MODE_MASTER		0
+#define I2C_MODE_SLAVE		1
+
 #define I2C0SCLL	(*(volatile unsigned char *) 0xE000C014)
 #define I2C0SCLH	(*(volatile unsigned char *) 0xE001C010)
 
