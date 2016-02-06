@@ -10,15 +10,23 @@ void init_I2C0(unsigned char mode)
 	__i2c_mode	= mode;
 }
 
-static bool I2C0_start()
+static bool I2C0_start(unsigned char addr, bool rw)
 {
 	I2C0CONCLR	= STO;
 	I2C0CONSET	= STA;
 	while(!SI);
-	if(I2C0STAT == 0x08)
+	I2C0CONCLR	= STAC;
+	if(I2C0STAT != 0x08)
+	{
+		return FALSE;
+	}
+	addr = rw ? addr & 0x01 : addr | 0xFE;
+	I2C0DAT = addr;
+
+	return TRUE;
 }
 
-s;tatic void I2C0_write_char(unsigned char ch)
+static void I2C0_write_char(unsigned char addr, unsigned char ch)
 {
 }
 
