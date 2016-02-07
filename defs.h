@@ -4,6 +4,6 @@
 #define	TRUE	1
 #define	FALSE	0
 
-typefef	unsigned char bool;
+typedef	unsigned char bool;
 
 #endif
