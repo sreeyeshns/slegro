@@ -10,13 +10,15 @@ void init_I2C0(unsigned char mode)
 	I2C0SCLH	= 0x4B;
 	I2C0CONSET	= I2EN;
 	__i2c0_mode	= mode;
+	__i2c0_initialised = TRUE;
 }
 
 static bool I2C0_start()
 {
+	I2C0CONCLR	= 0xFF;
 	I2C0CONSET	= STA;
 	while(!SI);
-	I2C0CONCLR	= STAC;
+	I2C0CONCLR	= STAC | SIC;
 	
 	if(I2C0STAT != 0x08)
 	{
@@ -24,23 +26,30 @@ static bool I2C0_start()
 	}
 	return TRUE;
 }
-static bool I2C0_slave_addr(unsigned char addr, bool rw)
+static inline bool I2C0_slave_addr(unsigned char addr, bool rw)
 {
 	addr = rw ? addr | BIT_MASK_RD : addr & BIT_MASK_WR;
 	I2C0DAT = addr;
+	while(!SI);
+	I2C0CONCLR	= STAC;
+
 	return TRUE;
 }
 
-static void I2C0_write_byte(unsigned char addr, unsigned char ch)
+long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len)
 {
-}
-
-unsigned long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len)
-{
+	unsigned long count = 0;
+	if(!__i2c0_initialised)
+			return I2C_ERROR_UNINITIALISED;
 	if(__i2c0_mode == I2C_MODE_MASTER)
 	{
 		I2C0_start();
 	}
-	return 0;
+	I2C0_slave_addr(addr, I2C_WR);
+	for(count = 0; count < buff_len; count++)
+	{
+		I2C0DAT = *buff++;
+	}
+	return count;
 }
 

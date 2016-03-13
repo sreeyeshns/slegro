@@ -1,6 +1,9 @@
 #ifndef _I2C_H
 #define _I2C_H
 
+#define I2C_WR	0
+#define I2C_RD	1
+
 #define	BIT_MASK_RD	0x01
 #define	BIT_MASK_WR	0xFE
 
@@ -27,14 +30,16 @@
 #define	I2EN	(0x40)
 
 /* I2C0CONCLR bits  */
-#define	AAC	AA  
-#define	SIC	SI  
+#define	AAC		AA
+#define	SIC		SI
 #define	STOC	STO 
 #define	STAC	STA 
 #define	I2ENC	I2EN
 
+#define	I2C_ERROR_UNINITIALISED	-1
+
 extern void init_I2C0(unsigned char mode);
-unsigned long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
-unsigned long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len);
+long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
+long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len);
 
 #endif
