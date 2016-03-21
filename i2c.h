@@ -37,6 +37,7 @@
 #define	I2ENC	I2EN
 
 #define	I2C_ERROR_UNINITIALISED	-1
+#define	I2C_ERROR_TRANSMIT		-2
 
 extern void init_I2C0(unsigned char mode);
 long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
