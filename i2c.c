@@ -17,7 +17,7 @@ static bool I2C0_start()
 {
 	I2C0CONCLR	= 0xFF;
 	I2C0CONSET	= STA;
-	while(!SI);
+	while(!(I2C0CONCLR & SI));
 	I2C0CONCLR	= STAC | SIC;
 	
 	if(I2C0STAT != 0x08)
@@ -29,18 +29,23 @@ static bool I2C0_start()
 static void I2C0_stop()
 {
 	I2C0CONSET = STO;
-	while(!SI);
+	while(!(I2C0CONCLR & SI));
 }
 
 static inline bool I2C0_slave_addr(unsigned char addr, bool rw)
 {
 	addr = rw ? addr | BIT_MASK_RD : addr & BIT_MASK_WR;
 	I2C0DAT = addr;
-	while(!SI);
+	while(!(I2C0CONCLR & SI));
 	//I2C0CONCLR	= STAC;
-	if(I2C0STAT != 0x18)
+	if(rw == I2C_WR && I2C0STAT != 0x18)
 		return FALSE;
-	I2C0CONCLR	= STAC | SIC;
+	else if(rw == I2C_RD && I2C0STAT != 0x40)
+		return FALSE;
+	if(rw == I2C_WR)
+		I2C0CONCLR	= STAC | SIC;
+	if(rw == I2C_RD)
+			I2C0CONCLR	= STAC;
 	return TRUE;
 }
 
@@ -49,6 +54,8 @@ long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len)
 	unsigned long count = 0;
 	if(!__i2c0_initialised)
 			return I2C_ERROR_UNINITIALISED;
+	if(!buff_len)
+		return 0;
 	if(__i2c0_mode == I2C_MODE_MASTER)
 	{
 		I2C0_start();
@@ -56,8 +63,8 @@ long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len)
 		for(count = 0; count < buff_len; count++)
 		{
 			I2C0DAT = *buff++;
-			while(!SI);
-			I2C0CONCLR	= STAC;
+			while(!(I2C0CONCLR & SI));
+			I2C0CONCLR	= SIC;
 			if(I2C0STAT == 0x28)
 			{
 				continue;
@@ -70,6 +77,38 @@ long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len)
 			{
 				return I2C_ERROR_TRANSMIT;
 			}
+		}
+		I2C0_stop();
+	}
+	return count;
+}
+
+long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len)
+{
+	unsigned long count = 0;
+	if(!__i2c0_initialised)
+			return I2C_ERROR_UNINITIALISED;
+	if(!buff_len)
+			return 0;
+	if(__i2c0_mode == I2C_MODE_MASTER)
+	{
+		I2C0_start();
+		I2C0_slave_addr(addr, I2C_RD);
+
+		for(count = 0; count < buff_len; count++)
+		{
+			if(count < buff_len - 1)
+				I2C0CONSET = AA;
+			else
+				I2C0CONCLR = AAC;
+			I2C0CONCLR = SIC;
+			while(!(I2C0CONCLR & SI));
+			if(I2C0STAT == 0x50 || I2C0STAT == 0x58)
+			{
+				*buff++ = I2C0DAT;
+			}
+			else
+				break;
 		}
 		I2C0_stop();
 	}
