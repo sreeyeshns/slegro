@@ -32,7 +32,6 @@
 /* I2C0CONCLR bits  */
 #define	AAC		AA
 #define	SIC		SI
-#define	STOC	STO 
 #define	STAC	STA 
 #define	I2ENC	I2EN
 
@@ -40,7 +39,7 @@
 #define	I2C_ERROR_TRANSMIT		-2
 
 extern void init_I2C0(unsigned char mode);
-long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
-long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len);
+extern long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
+extern long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len);
 
 #endif
