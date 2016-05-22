@@ -1,6 +1,7 @@
-#include<pll.h>
-#include<serial.h>
-#include<i2c.h>
+#include <pll.h>
+#include <serial.h>
+#include <i2c.h>
+#include <vic.h>
 
 void delay()
 {
@@ -16,7 +17,8 @@ int main()
 	//printf("Hello");
 	delay();
 	//UART0_write_text("***I love Chithra***");
-	init_I2C0(I2C_MODE_MASTER);
+	VIC_init();
+	I2C0_init(I2C_MODE_MASTER);
 	I2C0_write(0xA0, &ch, 1);
 	while(1);
 

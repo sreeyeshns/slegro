@@ -1,14 +1,31 @@
 #include <defs.h>
 #include <gpio.h>
 #include <i2c.h>
+#include <vic.h>
+#include <serial.h>
+#include <stdio.h>
 static unsigned char __i2c0_initialised = FALSE;
 static unsigned char __i2c0_mode = I2C_MODE_MASTER;
 
-void init_I2C0(unsigned char mode)
+void I2C0_IRQ_handler(void)
+{
+	//char buff[20];
+	//static int count;
+	//sprintf(buff,"Call count %d", count);
+	//UART0_write_text("Inside handler");
+	;
+}
+
+void I2C0_init(unsigned char mode)
 {
 	PINSEL0		= 0x50;
+	IO0DIR		= 0x0C;
+	IO0SET		= 0x0C;
+
+	I2C0CONCLR	= AAC | SIC | STAC | I2ENC;
 	I2C0SCLL	= 0x4B;
 	I2C0SCLH	= 0x4B;
+	VIC_install_IRQ(INT_NUM_I2C0, I2C0_IRQ_handler, NULL);
 	I2C0CONSET	= I2EN;
 	__i2c0_mode	= mode;
 	__i2c0_initialised = TRUE;

@@ -61,5 +61,7 @@ SECTIONS
 		. = . + (LENGTH(SRAM) - (. - (ORIGIN(SRAM))));
 		. = ALIGN(4);
 		__stack_end__ = .;
+		__stack_size__ = __stack_end__ - __stack_start__;
+		__IRQ_stack_top__ = (__stack_start__ + (__stack_size__ / 2));
 	} > SRAM
 }

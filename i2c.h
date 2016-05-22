@@ -12,13 +12,13 @@
 #define I2C_MODE_SLAVE		1
 
 /* I2C0 configuration registers */
-#define I2C0CONSET	(*(volatile unsigned char *) 0xE001C000)
-#define I2C0STAT	(*(volatile unsigned char *) 0xE001C004)
-#define I2C0DAT		(*(volatile unsigned char *) 0xE001C008)
-#define I2C0ADR		(*(volatile unsigned char *) 0xE001C00C)
-#define I2C0SCLH	(*(volatile unsigned char *) 0xE001C010)
-#define I2C0SCLL	(*(volatile unsigned char *) 0xE001C014)
-#define I2C0CONCLR	(*(volatile unsigned char *) 0xE001C018)
+#define I2C0CONSET	(*(volatile unsigned long *) 0xE001C000)
+#define I2C0STAT	(*(const volatile unsigned long *) 0xE001C004)
+#define I2C0DAT		(*(volatile unsigned long *) 0xE001C008)
+#define I2C0ADR		(*(volatile unsigned long *) 0xE001C00C)
+#define I2C0SCLH	(*(volatile unsigned long *) 0xE001C010)
+#define I2C0SCLL	(*(volatile unsigned long *) 0xE001C014)
+#define I2C0CONCLR	(*(volatile unsigned long *) 0xE001C018)
 
 /* I2C0 configuration registers bits */
 
@@ -38,7 +38,8 @@
 #define	I2C_ERROR_UNINITIALISED	-1
 #define	I2C_ERROR_TRANSMIT		-2
 
-extern void init_I2C0(unsigned char mode);
+extern void I2C0_IRQ_handler(void) __attribute__ ((interrupt("IRQ")));
+extern void I2C0_init(unsigned char mode);
 extern long I2C0_read(unsigned char addr, char *buff, unsigned long buff_len);
 extern long I2C0_write(unsigned char addr, const char *buff, unsigned long buff_len);
 
