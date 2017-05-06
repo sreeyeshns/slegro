@@ -195,7 +195,8 @@ int32_t I2C0_write(uint8_t addr, const uint8_t *buff, uint32_t buff_len)
     }
     else if (__i2c0_mode == I2C_MODE_MASTER)
     {
-        I2C0_slave_addr(addr, I2C_WR);
+        if(I2C0_slave_addr(addr, I2C_WR) == FALSE)
+            return -3;
         for (count = 0; count < buff_len; count++)
         {
             I2C0DAT = buff[count];
@@ -241,7 +242,8 @@ int32_t I2C0_read(uint8_t addr, uint8_t *buff, uint32_t buff_len)
     else if (__i2c0_mode == I2C_MODE_MASTER)
     {
 
-        I2C0_slave_addr(addr, I2C_RD);
+        if(I2C0_slave_addr(addr, I2C_RD) == FALSE)
+            return -3;
 
         if (buff_len > 1)
             I2C0CONSET = AA;
