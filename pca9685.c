@@ -13,7 +13,7 @@ static i2c_write_fn __pca9685_i2c_write = NULL;
 static i2c_read_fn  __pca9685_i2c_read = NULL;
 static uint8_t __pca9685_initialized = FALSE;
 
-#if 1
+#if 0
 static int8_t PCA9685_read_reg(uint8_t reg_addr_start, uint8_t reg_count, uint8_t *value)
 {
     if(value == NULL)

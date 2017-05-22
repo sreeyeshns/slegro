@@ -93,7 +93,7 @@ int8_t I2C0_init(uint8_t mode, IRQ_handler handler)
 {
     if((mode == I2C_MODE_MASTER_INT || mode == I2C_MODE_MASTER_INT) && handler == NULL)
         return -1;
-    PINSEL0 = 0x50;
+    PINSEL0 |= 0x50U;
     IO0DIR = 0x0C;
     IO0SET = 0x0C;
 

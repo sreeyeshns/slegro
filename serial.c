@@ -2,7 +2,7 @@
 #include <serial.h>
 void init_UART0()
 {
-	PINSEL0 |= 0x05;
+	PINSEL0 |= 0x05U;
 	U0LCR	= 0x83;
 	U0DLM	= 0x00;
 	U0DLL	= 0x62;
