@@ -28,18 +28,41 @@
 
 #define PWM_COUNTER_RANGE       4096
 
+/*
+ *  PWM logical channel numbers. Some channels are not used
+ *  since the pins allotted for functions.
+ */
 enum
 {
-    PWM_CHANNEL_0,
-    PWM_CHANNEL_1,
-    PWM_CHANNEL_2,
-    PWM_CHANNEL_3,
+    PWM_CHANNEL_0, /* PWM2 */
+    PWM_CHANNEL_1, /* PWM4 */
+    PWM_CHANNEL_2, /* PWM5 */
+    PWM_CHANNEL_3, /* PWM6 */
     PWM_CHANNEL_MAX
 };
 
-void PWM_init(void);
-int8_t PWM_set_duty_cycle(uint8_t channel, float duty_cycle);
-int8_t PWM_start(uint8_t channel);
-int8_t PWM_stop(uint8_t channel);
+/*
+ * Initializes internal PWM module.
+ */
+extern void PWM_init(void);
+
+/*
+ * Set the duty cycle of a PWM channel.
+ * channel: Logical channel number (PWM_CHANNEL_0 - PWM_CHANNEL_3).
+ * duty_cycle: PWM duty cycle(0.0 - 100.0)
+ */
+extern int8_t PWM_set_duty_cycle(uint8_t channel, float duty_cycle);
+
+/*
+ * Starts PWM.
+ * channel: Logical channel number (PWM_CHANNEL_0 - PWM_CHANNEL_3).
+ */
+extern int8_t PWM_start(uint8_t channel);
+
+/*
+ * Stops PWM.
+ * channel: Logical channel number (PWM_CHANNEL_0 - PWM_CHANNEL_3).
+ */
+extern int8_t PWM_stop(uint8_t channel);
 
 #endif /* _PWM_H */

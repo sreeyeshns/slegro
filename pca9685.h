@@ -31,8 +31,6 @@
 #define PCA9685_PRESCALE_MAX        0xFF    /* => min. frequency of 24 Hz */
 
 #define PCA9685_COUNTER_RANGE       4096
-#define PCA9685_DEFAULT_PERIOD      5000000 /* Default period_ns = 1/200 Hz */
-#define PCA9685_OSC_CLOCK_MHZ       25      /* Internal oscillator with 25 MHz */
 
 #define PCA9685_NUMREGS         0xFF
 #define PCA9685_PWM_CHANEL_MAX  15
@@ -54,7 +52,18 @@
 #define PCA9685_RD_BUFF_SIZE    1
 #define PCA9685_WR_BUFF_SIZE    256
 
-int8_t PCA9685_init(i2c_write_fn i2c_write, i2c_read_fn i2c_read);
-int8_t PCA9685_set_duty_cycle(uint8_t channel, float duty_cycle);
+/*
+ * Initializes PCA9685 chip.
+ * i2c_write: Function pointer to I2C write function.
+ * i2c_read: Function pointer to I2C read function.
+ */
+extern int8_t PCA9685_init(i2c_write_fn i2c_write, i2c_read_fn i2c_read);
+
+/*
+ * Set the duty cycle of a PCA9685 PWM channel.
+ * channel: Logical channel number (0 - 15).
+ * duty_cycle: PWM duty cycle(0.0 - 100.0)
+ */
+extern int8_t PCA9685_set_duty_cycle(uint8_t channel, float duty_cycle);
 
 #endif /* PCA9685_H_ */

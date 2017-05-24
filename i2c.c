@@ -18,11 +18,6 @@ static uint32_t     __i2c0_buff_size = 0;
 
 extern uint8_t __vicinitialized;
 
-int8_t I2C0_is_initialized()
-{
-    return __i2c0_initialised;
-}
-
 void I2C0_IRQ_handler(void)
 {
     switch (I2C0STAT)

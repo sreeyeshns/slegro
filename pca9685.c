@@ -65,7 +65,8 @@ int8_t PCA9685_init(i2c_write_fn i2c_write, i2c_read_fn i2c_read)
     {
         return -1;
     }
-    if(!I2C0_is_initialized())
+
+    if(I2C0_init(I2C_MODE_MASTER, NULL))
     {
         return -2;
     }

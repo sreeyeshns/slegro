@@ -5,11 +5,7 @@ AS := $(TOOLCHAIN_PREFIX)as
 AR := $(TOOLCHAIN_PREFIX)ar -cr
 OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
 
-ifeq ($(OS),Windows_NT)
-RM := del
-else
 RM := rm -f
-endif
 
 TARGET := image.hex
 

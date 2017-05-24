@@ -81,12 +81,6 @@ extern void I2C0_IRQ_handler(void) __attribute__ ((interrupt("IRQ")));
 extern int8_t I2C0_init(uint8_t mode, IRQ_handler handler);
 
 /*
- * Routine to check whether I2C module is initialized or not.
- * Returns TRUE if module is initialized or FALSE otherwise.
- */
-extern int8_t I2C0_is_initialized(void);
-
-/*
  * I2C write function. Returns number of bytes read if the call is successful and returns a negative error code in case of failure.
  */
 extern int32_t I2C0_read(uint8_t addr, uint8_t *buff, uint32_t buff_len);
