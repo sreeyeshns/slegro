@@ -15,8 +15,8 @@ void VIC_init()
     __vicinitialized = TRUE;
 }
 
-int VIC_install_IRQ(unsigned char int_num, IRQ_handler handler,
-        const unsigned char *irq_slot)
+int VIC_install_IRQ(uint8_t int_num, IRQ_handler handler,
+        const uint8_t *irq_slot)
 {
     int irq_num = -1;
     if (handler == NULL || int_num >= INT_NUM_MAX)
