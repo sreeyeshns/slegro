@@ -13,7 +13,7 @@
 
 typedef void (*log_fn_t)(int8_t *);
 
-extern void set_log_cb_fn(log_fn_t fn);
+extern void log_init(log_fn_t fn);
 extern void sys_log(char *fmt, ...);
 
 #endif /* _LOG_H */

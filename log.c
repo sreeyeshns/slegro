@@ -10,7 +10,7 @@
 
 static log_fn_t log_fn = NULL;
 
-void set_log_cb_fn(log_fn_t fn)
+void log_init(log_fn_t fn)
 {
     log_fn = fn;
 }
