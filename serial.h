@@ -8,9 +8,9 @@
 #define U0LCR   (*(volatile uint32_t *) 0xE000C00C)
 #define U0LSR   (*(const volatile uint32_t *) 0xE000C014)
 
-void init_UART0(void);
+void UART0_init(void);
 extern uint8_t UART0_read(void);
-extern void UART0_write_char(uint8_t ch);
-extern void UART0_write_text(int8_t *str);
+extern void UART0_write_ch(uint8_t ch);
+extern void UART0_write_str(int8_t *str);
 
 #endif

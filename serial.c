@@ -1,6 +1,6 @@
 #include <gpio.h>
 #include <serial.h>
-void init_UART0()
+void UART0_init()
 {
     PINSEL0 |= 0x05U;
     U0LCR = 0x83;
@@ -9,18 +9,20 @@ void init_UART0()
     U0LCR &= ~0x80;
 }
 
-void UART0_write_char(uint8_t ch)
+void UART0_write_ch(uint8_t ch)
 {
     while (!(U0LSR & 0x20));
     U0THR = ch;
-    while (!(U0LSR & 0x20));
+    while (!(U0LSR & 0x40));
 }
-void UART0_write_text(int8_t *str)
+void UART0_write_str(int8_t *str)
 {
     while (*str)
     {
-        UART0_write_char(*str++);
+        while (!(U0LSR & 0x20));
+        U0THR = *str++;
     }
+    while (!(U0LSR & 0x40));
 }
 
 uint8_t UART0_read()
