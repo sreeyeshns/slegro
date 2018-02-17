@@ -2,7 +2,6 @@
 *.elf
 *.hex
 *.map
-.gitignore
 .cproject
 .project
 /.settings/

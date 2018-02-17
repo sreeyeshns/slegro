@@ -17,7 +17,7 @@ SECTIONS
 {
     .text :
     {
-        startup.o (.text)
+        src/startup.o (.text)
         *(.text .txt.*)
         . = ALIGN(4);
     } > FLASH
