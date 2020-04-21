@@ -17,7 +17,7 @@ SECTIONS
 {
     .text :
     {
-        src/startup.o (.text)
+        CMakeFiles/slegro.dir/src/startup.s.obj (.text)
         *(.text .txt.*)
         . = ALIGN(4);
     } > FLASH
