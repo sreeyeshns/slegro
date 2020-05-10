@@ -2,6 +2,8 @@
     <string name="app_name">Slegro</string>
     <string name="ok">OK</string>
     <string name="exit">EXIT</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
     <string name="connect_text">Connect to target</string>
     <string name="connect">Connect</string>
     <string name="scanning">Scanning...</string>
