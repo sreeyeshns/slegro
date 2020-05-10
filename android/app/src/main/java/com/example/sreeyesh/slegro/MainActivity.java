@@ -1,6 +1,7 @@
 package com.example.sreeyesh.slegro;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -21,17 +23,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static com.example.sreeyesh.slegro.BluetoothConnectionManager.BTConnectionStatus.BT_INIT_SUCCESS;
-import static com.example.sreeyesh.slegro.BluetoothConnectionManager.BT_TARGET_ADDR;
-import static com.example.sreeyesh.slegro.BluetoothConnectionManager.REQUEST_ENABLE_BT;
+import static com.example.sreeyesh.slegro.BluetoothConnectionManager.*;
 
 public class MainActivity extends AppCompatActivity {
+    private BluetoothConnectionManager mBluetoothConnectionManager;
 
-    BluetoothConnectionManager mBTConnectionManager;
     final BroadcastReceiver mBroadcastRreceiver;
 
     public MainActivity() {
-        mBTConnectionManager = new BluetoothConnectionManager();
+        mBluetoothConnectionManager = new BluetoothConnectionManager();
+
+        /* Save the object reference globally so that it can be accessed
+         by other activities */
+        if(null != mBluetoothConnectionManager)
+        {
+            sBluetoothConnectionManager = mBluetoothConnectionManager;
+        }
+
         mBroadcastRreceiver = new BroadcastReceiver()
         {
             @Override
@@ -45,17 +53,24 @@ public class MainActivity extends AppCompatActivity {
                     case BluetoothDevice.ACTION_FOUND:
                         // Get the bluetoothDevice object from the Intent
                         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                        if (BT_TARGET_ADDR.equals(device.getAddress())) {
-                            mBTConnectionManager.stopDiscovery();
-                            device.createBond();
+                        if (BluetoothConnectionManager.BT_TARGET_ADDR.equals(device.getAddress())) {
+                            mBluetoothConnectionManager.stopDiscovery();
+                            mBluetoothConnectionManager.setTargetDevice(device);
+                            scanningTextView.setText("Connecting to target");
+                            if(BluetoothConnectionStatus.BT_OK == mBluetoothConnectionManager.connectToTarget()) {
+                                scanningTextView.setText("Verifying target");
+                                Intent controlActivityIntent = new Intent(context, ControlActivity.class);
+                                startActivity(controlActivityIntent);
+                            }
+                            else {
+                                alertMessageShow("Error", "Failed to connect to target!");
+                            }
                             scanProgressBar.setVisibility(View.INVISIBLE);
                             scanningTextView.setVisibility(View.INVISIBLE);
-                            alertMessageShow("Success", "Target detected!");
-                            mBTConnectionManager.setTargetDevice(device);
                         }
                         break;
                     case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                        if (!mBTConnectionManager.isTargetDiscovered()) {
+                        if (!mBluetoothConnectionManager.isTargetDiscovered()) {
                             scanningTextView.setText("Scanning stopped");
                             alertMessageShow("Error", "Target not found!");
                             scanProgressBar.setVisibility(View.INVISIBLE);
@@ -77,13 +92,11 @@ public class MainActivity extends AppCompatActivity {
 
         alertDialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getApplicationContext(), "You clicked on OK", Toast.LENGTH_SHORT).show();
             }
         });
 
         alertDialogBuilder.setNegativeButton(R.string.exit, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(getApplicationContext(), "You clicked on EXIT", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -96,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         }
-        if (BT_INIT_SUCCESS != mBTConnectionManager.initBluetoothManager()) {
+        if (BluetoothConnectionStatus.BT_OK != mBluetoothConnectionManager.initBluetoothManager()) {
             alertMessageShow("Error", "Device doesn't support Bluetooth");
             finish();
         }
@@ -105,23 +118,32 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.registerReceiver(mBroadcastRreceiver, filter);
+        registerReceiver(mBroadcastRreceiver, filter);
     }
 
-    private void findTarget() {
+    private void setupBluetoothCommunication() {
         ProgressBar scanProgressBar = (ProgressBar)findViewById(R.id.progressBar);
         TextView scanningTextView = (TextView)findViewById(R.id.scanStatusTextViews);
 
         scanningTextView.setText("Checking for paired target");
 
-        BluetoothDevice device = mBTConnectionManager.searchPairedDeviceList(BT_TARGET_ADDR);
+        BluetoothDevice device = mBluetoothConnectionManager.searchPairedDeviceList(BT_TARGET_ADDR);
         if(null == device) {
             scanningTextView.setText("Scanning for target");
             // Discover new devices
-            mBTConnectionManager.startDiscovery();
+            mBluetoothConnectionManager.startDiscovery();
         } else {
-            mBTConnectionManager.setTargetDevice(device);
-            alertMessageShow("Found", "Target detected!");
+            mBluetoothConnectionManager.setTargetDevice(device);
+
+            scanningTextView.setText("Connecting to target");
+            if(BluetoothConnectionStatus.BT_OK == mBluetoothConnectionManager.connectToTarget()) {
+                scanningTextView.setText("Verifying target");
+                Intent controlActivityIntent = new Intent(this, ControlActivity.class);
+                startActivity(controlActivityIntent);
+            }
+            else {
+                alertMessageShow("Error", "Failed to connect to target!");
+            }
             scanProgressBar.setVisibility(View.INVISIBLE);
             scanningTextView.setVisibility(View.INVISIBLE);
             Button connectButton = (Button)findViewById(R.id.connectButton);
@@ -129,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void onclickScan(View view) {
+    public void onclickConnect(View view) {
         Button connectButton = (Button)findViewById(R.id.connectButton);
         connectButton.setEnabled(false);
         ProgressBar scanProgressBar = (ProgressBar)findViewById(R.id.progressBar);
@@ -137,11 +159,11 @@ public class MainActivity extends AppCompatActivity {
         TextView scanningTextView = (TextView)findViewById(R.id.scanStatusTextViews);
         scanningTextView.setVisibility(View.VISIBLE);
         scanningTextView.setText("Checking bluetooth adaptor");
-        if(mBTConnectionManager.isAdaptorEnabled()) {
-            findTarget();
+        if(mBluetoothConnectionManager.isAdaptorEnabled()) {
+            setupBluetoothCommunication();
         }
         else {
-            scanningTextView.setText("Turning on bluetooth...");
+            scanningTextView.setText("Turning on bluetooth");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
@@ -150,14 +172,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_ENABLE_BT && resultCode == RESULT_OK) {
-            findTarget();
+            setupBluetoothCommunication();
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
+        setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         // Hide the action bar and run in full screen
         getSupportActionBar().hide();
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -174,10 +198,42 @@ public class MainActivity extends AppCompatActivity {
         initSlegro();
     }
 
+    /* call this function only from onBackPressed */
+    private void navigateBack() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mBluetoothConnectionManager.isTargetConnected()) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+            alertDialogBuilder.setTitle("Exit");
+            alertDialogBuilder.setMessage("Do you want to exit?");
+
+            alertDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    mBluetoothConnectionManager.disconnectTarget();
+                    navigateBack();
+                }
+            });
+
+            alertDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mBroadcastRreceiver);
+        mBluetoothConnectionManager.disconnectTarget();
     }
-
 }
