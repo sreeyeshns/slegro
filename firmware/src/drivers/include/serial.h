@@ -1,6 +1,8 @@
 #ifndef _SERIAL_H
 #define _SERIAL_H
 
+#include <stdint.h>
+
 #define U0RBR   (*(const volatile uint32_t *) 0xE000C000)
 #define U0THR   (*(volatile uint32_t *) 0xE000C000)
 #define U0DLL   (*(volatile uint32_t *) 0xE000C000)
@@ -12,5 +14,5 @@ void UART0_init(void);
 extern uint8_t UART0_read(void);
 extern void UART0_write_ch(uint8_t ch);
 extern void UART0_write_str(int8_t *str);
-
+extern int32_t UART0_write(uint8_t *buff, uint32_t size);
 #endif

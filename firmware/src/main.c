@@ -1,5 +1,10 @@
+#include <stdio.h>
+#include <string.h>
+#include <serial.h>
 #include <pll.h>
 #include <gpio.h>
+
+extern int32_t (*__console_write)(uint8_t *, uint32_t);
 
 void Delay(unsigned long val)
 {
@@ -9,9 +14,25 @@ void Delay(unsigned long val)
    }
 }
 
+static int32_t system_init()
+{
+    /* Initialize the PLL to set 25 MHZ clock */
+    PLL_init();
+
+    /* Initialize UART0 for console access */
+    UART0_init();
+
+    /* Set the console write API */
+    __console_write = UART0_write;
+
+    return 0;
+}
+
 int main()
 {
-   PLL_init();
+   system_init();
+   fprintf(stdout, "Slegro version %d.%d", 0, 1);
+   fflush(stdout);
 
    IO0DIR = 0XFFFFFFFF; /* Set Port0 as output */
    while(1)

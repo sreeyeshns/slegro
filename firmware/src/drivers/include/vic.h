@@ -1,5 +1,6 @@
 #ifndef _VIC_H
 #define _VIC_H
+
 #include <stdint.h>
 
 #define VIC_VECT_ADDR_BASE  ((volatile uint32_t *)0xFFFFF100)
@@ -24,6 +25,6 @@ typedef void (*IRQ_handler)(void);
 
 //extern void VIC_FIQ_handler(void) __attribute__ ((interrupt("FIQ")));
 extern void VIC_init(void);
-extern int VIC_install_IRQ(uint8_t int_num, IRQ_handler handler, const uint8_t *irq_slot);
+extern int32_t VIC_install_IRQ(uint8_t int_num, IRQ_handler handler, const uint8_t *irq_slot);
 
 #endif

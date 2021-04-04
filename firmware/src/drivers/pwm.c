@@ -5,11 +5,11 @@
  *      Author: Sreeyesh N S <sreeyeshns@gmail.com>
  */
 #include <stdint.h>
-#include <defs.h>
+#include <stdbool.h>
 #include <pwm.h>
 #include <gpio.h>
 
-static uint8_t __pwm_initialized = FALSE;
+static uint8_t __pwm_initialized = false;
 
 void PWM_init()
 {
@@ -27,7 +27,7 @@ void PWM_init()
     PWMLER   = 0x00000074U;
     PWMTCR   = 0x00000002U;
     PWMTCR   = 0x00000009U;
-    __pwm_initialized = TRUE;
+    __pwm_initialized = true;
 }
 
 int8_t PWM_set_duty_cycle(uint8_t channel, float duty_cycle)

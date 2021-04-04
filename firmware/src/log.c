@@ -4,9 +4,9 @@
  *  Created on: Oct 8, 2017
  *      Author: Sreeyesh N. S. <sreeyeshns@gmail.com>
  */
-#include <log.h>
-#include <stdarg.h>
 #include <stdio.h>
+#include <stdarg.h>
+#include <log.h>
 
 static log_fn_t log_fn = NULL;
 
