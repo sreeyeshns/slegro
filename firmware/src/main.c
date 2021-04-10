@@ -3,6 +3,8 @@
 #include <serial.h>
 #include <pll.h>
 #include <gpio.h>
+#include <log.h>
+#include <version.h>
 
 extern int32_t (*__console_write)(uint8_t *, uint32_t);
 
@@ -31,8 +33,9 @@ static int32_t system_init()
 int main()
 {
    system_init();
-   fprintf(stdout, "Slegro version %d.%d", 0, 1);
-   fflush(stdout);
+   LOG_INFO("!!! Slegro waking up !!!");
+   LOG_INFO("Software version: %d.%d.%d", MINOR_VERSION, MINOR_VERSION, PATCH_VERSION);
+   LOG_INFO("Build version: %s", BUILD_VERSION);
 
    IO0DIR = 0XFFFFFFFF; /* Set Port0 as output */
    while(1)
