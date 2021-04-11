@@ -49,6 +49,6 @@ void log_message(const log_level_t level, const int8_t *func_name, const uint32_
    va_start(aptr, fmt);
    vsnprintf((char *)log_buff + offset, LOG_BUFF_SIZE - offset, (char *)fmt, aptr);
    va_end(aptr);
-   fprintf(stdout, "%s\r", log_buff);
+   fprintf(stdout, "%s\r\n", log_buff);
    fflush(stdout);
 }
