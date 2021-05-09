@@ -1,5 +1,7 @@
 #include <pll.h>
 
+/* Fosc = 12 MHZ CCLK = 60 MHZ */
+
 static void PLL_feed()
 {
     PLLFEED = 0xAA;

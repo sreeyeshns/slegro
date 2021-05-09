@@ -4,8 +4,8 @@
 #ifndef _I2C_H
 #define _I2C_H
 
-#include <vic.h>
 #include <stdint.h>
+#include <vic.h>
 
 #define I2C_WR              0
 #define I2C_RD              1

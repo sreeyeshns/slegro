@@ -7,8 +7,8 @@
 
 #ifndef _PCA9685_H
 #define _PCA9685_H
-#include <i2c.h>
 #include <stdint.h>
+#include <i2c.h>
 
 #define PCA9685_REG_MODE1           0x00
 #define PCA9685_REG_MODE2           0x01

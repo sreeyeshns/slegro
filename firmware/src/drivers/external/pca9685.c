@@ -4,19 +4,20 @@
  *  Created on: May 3, 2017
  *      Author: Sreeyesh N S <sreeyeshns@gmail.com>
  */
-#include <pca9685.h>
+#include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <i2c.h>
-#include <defs.h>
+#include <pca9685.h>
 
 static i2c_write_fn __pca9685_i2c_write = NULL;
 static i2c_read_fn  __pca9685_i2c_read = NULL;
-static uint8_t __pca9685_initialized = FALSE;
+static uint8_t __pca9685_initialized = false;
 
 #if 0
 static int8_t PCA9685_read_reg(uint8_t reg_addr_start, uint8_t reg_count, uint8_t *value)
 {
-    if(value == NULL)
+    if(NULL == value)
         return -1;
     
     if(reg_count >= PCA9685_WR_BUFF_SIZE - 1)
@@ -38,7 +39,7 @@ static int8_t PCA9685_write_reg(uint8_t reg_addr_start, uint8_t reg_count, uint8
     uint8_t buff[PCA9685_WR_BUFF_SIZE];
     uint16_t count;
     uint8_t offset = 0;
-    if(value == NULL)
+    if(NULL == value)
         return -1;
     if(reg_count >= PCA9685_WR_BUFF_SIZE - 1)
         return -2;
@@ -54,14 +55,15 @@ static int8_t PCA9685_write_reg(uint8_t reg_addr_start, uint8_t reg_count, uint8
     return -1;
 }
 
-void delay(unsigned int i)
+void delay(uint32_t i)
 {
     for(i = 0; i < 65535; i++);
 }
+
 int8_t PCA9685_init(i2c_write_fn i2c_write, i2c_read_fn i2c_read)
 {
     uint8_t value;
-    if(i2c_read == NULL || i2c_write == NULL)
+    if(NULL == i2c_read || NULL == i2c_write)
     {
         return -1;
     }
@@ -81,7 +83,7 @@ int8_t PCA9685_init(i2c_write_fn i2c_write, i2c_read_fn i2c_read)
     value = PCA9685_PRESCALE_50_HZ;
     PCA9685_write_reg(PCA9685_REG_PRESCALE, 1, &value);
 
-    __pca9685_initialized = TRUE;
+    __pca9685_initialized = true;
     return 0;
 }
 

@@ -1,5 +1,9 @@
-#include <pll.h>
+#include <stdio.h>
+#include <string.h>
+#include <system.h>
 #include <gpio.h>
+#include <log.h>
+#include <version.h>
 
 void Delay(unsigned long val)
 {
@@ -9,9 +13,13 @@ void Delay(unsigned long val)
    }
 }
 
+
 int main()
 {
-   PLL_init();
+   system_init();
+   LOG_INFO("!!! Slegro waking up !!!");
+   LOG_INFO("Software version: %d.%d.%d", MINOR_VERSION, MINOR_VERSION, PATCH_VERSION);
+   LOG_INFO("Build version: %s", BUILD_VERSION);
 
    IO0DIR = 0XFFFFFFFF; /* Set Port0 as output */
    while(1)

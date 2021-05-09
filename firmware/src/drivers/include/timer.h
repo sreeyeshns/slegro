@@ -7,7 +7,9 @@
 
 #ifndef _TIMER_H
 #define _TIMER_H
+
 #include <stdint.h>
+
 #define T0IR    (*(volatile uint32_t *) 0xE0004000)
 #define T0TCR   (*(volatile uint32_t *) 0xE0004004)
 #define T0TC    (*(volatile uint32_t *) 0xE0004008)

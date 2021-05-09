@@ -14,5 +14,6 @@
 #define SYS_CCLK_MHZ    (SYS_XTAL_MHZ * PLL_MUL_FACT)
 #define SYS_PCLK_MHZ    (SYS_CCLK_MHZ/APB_DIV_FACT)
 
+int32_t system_init(void);
 
 #endif /* _SYSTEM_H */
