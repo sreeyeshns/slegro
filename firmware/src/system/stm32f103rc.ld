@@ -9,22 +9,24 @@
 STACK_HEAP_BOUNDARY_OFFSET = 0;
 MEMORY
 {
-    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 512K
-    SRAM  (rw) : ORIGIN = 0x40000000, LENGTH = 32K
+    FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 64K
+    SRAM  (rw) : ORIGIN = 0x20000000, LENGTH = 20K
 }
 
 SECTIONS
 {
+    .  = 0x00000000;         /* From 0x00000000 */
+    
     .text :
     {
-        CMakeFiles/slegro.dir/src/startup.s.obj (.text)
-        *(.text .txt.*)
+        *(.vectors)          /* Vector table */
+        *(.text .txt.*)      /* Program code */
         . = ALIGN(4);
     } > FLASH
 
     .rodata :
     {
-        *(.rodata .rodata.*)
+        *(.rodata .rodata.*) /* Read only data */
         . = ALIGN(4);
     } > FLASH
 
@@ -32,7 +34,7 @@ SECTIONS
     {
         __data_load__ = LOADADDR (.data);
         __data_start__ = .;
-        *(.data .data.*)
+        *(.data .data.*)     /* Data memory */
         . = ALIGN(4);
         __data_end__ = .;
     } > SRAM AT > FLASH
@@ -49,13 +51,10 @@ SECTIONS
     .heap :
     {
         __heap_start__ = .;
-        PROVIDE(end = __heap_start__);
-        PROVIDE(_heap_start = __heap_start__);
         . = . + ((LENGTH(SRAM) - (. - (ORIGIN(SRAM)))) / 2);
         . += STACK_HEAP_BOUNDARY_OFFSET;
         . = ALIGN(4);
         __heap_end__ = .;
-        PROVIDE(_heap_end = __heap_end__);
     } > SRAM
 
     .stack :
@@ -65,6 +64,5 @@ SECTIONS
         . = ALIGN(4);
         __stack_end__ = .;
         __stack_size__ = __stack_end__ - __stack_start__;
-        __IRQ_stack_top__ = (__stack_start__ + (__stack_size__ / 2));
     } > SRAM
 }
