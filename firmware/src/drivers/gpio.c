@@ -1,14 +1,15 @@
+#include <common.h>
 #include <sysclk.h>
 #include <gpio.h>
 
 static void porta_config()
 {
     /* Enable APB2 clock for PORT A */
-    RCC_APB2ENR |= RCC_APB2ENR_IOPAEN;
+    RCC.APB2ENR_IOPAEN = BIT_SET;
 
     /* Configure pin 0 of PORT A for gpio output*/
-    GPIOA_CRL |= GPIOA_CRL_MODE0;
-    GPIOA_CRL &= ~(GPIOA_CRL_CNF0);
+    GPIOA.CRL_MODE0 = CRL_MODE0_50MHZ;
+    GPIOA.CRL_CNF0 = CRL_CNF0_GPPP;
 }
 
 void gpio_init()
@@ -22,7 +23,16 @@ void gpio_write_bits(const gpio_port_t port, const uint16_t bits, const bit_stat
     switch(port)
     {
         case PORTA:
-            GPIOA_BSRR = bits << ((BIT_SET == state) ? 0 : 16);
+            if(BIT_SET == state)
+            {
+                GPIOA.BSRR_BR = BIT_NONE;
+                GPIOA.BSRR_BS = bits;
+            }
+            else
+            {
+                GPIOA.BSRR_BS = BIT_NONE;
+                GPIOA.BSRR_BR = bits;
+            }
             break;
         default:
             //TODO Log error here

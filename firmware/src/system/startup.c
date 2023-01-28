@@ -3,12 +3,12 @@
 
 #define STACK_TOP   0x20005000 //TODO Instead get the stack end address from linker script
 
-extern uint32_t * const __data_start__;
-extern uint32_t * const __data_load__;
-extern uint32_t * const __data_end__;
+extern uint32_t __data_start__[];
+extern uint32_t const __data_load__[];
+extern uint32_t const __data_end__[];
 
-extern uint32_t * const __bss_start__;
-extern uint32_t * const __bss_end__;
+extern uint32_t __bss_start__[];
+extern uint32_t const __bss_end__[];
 
 static void __startup(void);
 void main(void);
