@@ -40,9 +40,6 @@ void gpio_write_bits(const gpio_port_t port, const uint16_t bits, const bit_stat
                 GPIOA.BSRR_BR = bits;
             }
             break;
-        default:
-            //TODO Log error here
-            break;
     }
 
 }
