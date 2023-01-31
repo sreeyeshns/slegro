@@ -65,4 +65,8 @@ SECTIONS
         __stack_end__ = .;
         __stack_size__ = __stack_end__ - __stack_start__;
     } > SRAM
+
+    GPIOA = 0x40010800;
+    USART1 = 0x40013800;
+    RCC = 0x40021000;
 }

@@ -1,17 +1,16 @@
 #ifndef _GPIO_H
 #define _GPIO_H
 #include <stdint.h>
+#include <common.h>
 
-#define GPIOA_BASE                  0x40010800UL
-#define GPIOA_CRL                   (*(volatile uint32_t *)(GPIOA_BASE + 0x00))
-#define GPIOA_CRL_MODE0             0x00000003
-#define GPIOA_CRL_CNF0              0x0000000C
+#define GPIO_CNF_GPOPP          0
+#define GPIO_CNF_AFOPP          2
+#define GPIO_CNF_AFIPP          2
 
-#define GPIOA_BSRR                  (*(volatile uint32_t *)(GPIOA_BASE + 0x10))
-#define GPIOA_BSRR_BS0              0x00000001
-#define GPIOA_BSRR_BR0              0x00010000
+#define GPIO_MODE_INPUT         0
+#define GPIO_MODE_50MHZ         3
 
-#define BIT_0                       0x00000001UL
+#define BIT_0                       0x0001UL
 #define BIT_1                       (BIT_0 << 1)
 #define BIT_2                       (BIT_1 << 1)
 #define BIT_3                       (BIT_2 << 1)
@@ -27,12 +26,64 @@
 #define BIT_13                      (BIT_12 << 1)
 #define BIT_14                      (BIT_13 << 1)
 #define BIT_15                      (BIT_14 << 1)
+#define BIT_NONE                    0x0000UL
+#define BIT_ALL                     0xFFFFUL
 
-typedef enum
+/* GPIOA Register mapping*/
+struct
 {
-    BIT_CLEAR,
-    BIT_SET
-}bit_state_t;
+    /***** Port A configuration register low (GPIOA_CRL). Address offset: 0x00 *****/
+    union
+    {
+        volatile uint32_t CRL;
+        struct
+        {
+            volatile uint32_t MODE0  :2;
+            volatile uint32_t CNF0   :2;
+            volatile uint32_t        :28;
+        }bits;
+    }_CRL;
+#define CRL                 _CRL.CRL
+#define CRL_MODE0           _CRL.bits.MODE0
+#define CRL_CNF0            _CRL.bits.CNF0
+
+
+    /***** Port A configuration register high (GPIOA_CRH). Address offset: 0x04 *****/
+    union
+    {
+        volatile uint32_t CRH;
+        struct
+        {
+            volatile uint32_t        :4;
+            volatile uint32_t MODE9  :2;
+            volatile uint32_t CNF9   :2;
+            volatile uint32_t MODE10 :2;
+            volatile uint32_t CNF10  :2;
+            volatile uint32_t        :20;
+        }bits;
+    }_CRH;
+#define CRH                 _CRH.CRH
+#define CRH_MODE9           _CRH.bits.MODE9
+#define CRH_CNF9            _CRH.bits.CNF9
+#define CRH_MODE10          _CRH.bits.MODE10
+#define CRH_CNF10           _CRH.bits.CNF10
+
+    uint32_t unused1[2];   /* Skip the unused registers */
+
+    /***** Port A bit set/reset register (GPIOA_BSRR). Address offset: 0x10 *****/
+    union
+    {
+        volatile uint32_t BSRR;
+        struct
+        {
+            volatile uint32_t BS     :16;
+            volatile uint32_t BR     :16;
+        }bits;
+    }_BSRR;
+#define BSRR                _BSRR.BSRR
+#define BSRR_BS             _BSRR.bits.BS
+#define BSRR_BR             _BSRR.bits.BR
+}extern GPIOA;
 
 typedef enum
 {
