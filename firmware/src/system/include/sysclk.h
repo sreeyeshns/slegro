@@ -2,6 +2,9 @@
 #define _SYSCLK_H
 #include <stdint.h>
 
+#define PCLK1       36000000 /* APB1 clock frequency 36Mhz */
+#define PCLK2       72000000 /* APB2 clock frequency 72Mhz */
+
 /* RCC Register mapping*/
 struct
 {
@@ -62,13 +65,16 @@ struct
         volatile uint32_t APB2ENR;
         struct
         {
-            volatile uint32_t        :2;
-            volatile uint32_t IOPAEN :1;
-            volatile uint32_t        :29;
+            volatile uint32_t           :2;
+            volatile uint32_t IOPAEN    :1;
+            volatile uint32_t           :11;
+            volatile uint32_t USART1EN  :1;
+            volatile uint32_t           :17;
         }bits;
     }_APB2ENR;
 #define APB2ENR                _APB2ENR.APB2ENR
 #define APB2ENR_IOPAEN         _APB2ENR.bits.IOPAEN
+#define APB2ENR_USART1EN       _APB2ENR.bits.USART1EN
 }extern RCC;
 
 /*

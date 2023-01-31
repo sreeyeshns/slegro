@@ -3,6 +3,13 @@
 #include <stdint.h>
 #include <common.h>
 
+#define GPIO_CNF_GPOPP          0
+#define GPIO_CNF_AFOPP          2
+#define GPIO_CNF_AFIPP          2
+
+#define GPIO_MODE_INPUT         0
+#define GPIO_MODE_50MHZ         3
+
 #define BIT_0                       0x0001UL
 #define BIT_1                       (BIT_0 << 1)
 #define BIT_2                       (BIT_1 << 1)
@@ -38,11 +45,30 @@ struct
     }_CRL;
 #define CRL                 _CRL.CRL
 #define CRL_MODE0           _CRL.bits.MODE0
-#define CRL_MODE0_50MHZ     3
 #define CRL_CNF0            _CRL.bits.CNF0
-#define CRL_CNF0_GPPP       0
 
-    uint32_t unused1[3];   /* Skip the unused registers */
+
+    /***** Port A configuration register high (GPIOA_CRH). Address offset: 0x04 *****/
+    union
+    {
+        volatile uint32_t CRH;
+        struct
+        {
+            volatile uint32_t        :4;
+            volatile uint32_t MODE9  :2;
+            volatile uint32_t CNF9   :2;
+            volatile uint32_t MODE10 :2;
+            volatile uint32_t CNF10  :2;
+            volatile uint32_t        :20;
+        }bits;
+    }_CRH;
+#define CRH                 _CRH.CRH
+#define CRH_MODE9           _CRH.bits.MODE9
+#define CRH_CNF9            _CRH.bits.CNF9
+#define CRH_MODE10          _CRH.bits.MODE10
+#define CRH_CNF10           _CRH.bits.CNF10
+
+    uint32_t unused1[2];   /* Skip the unused registers */
 
     /***** Port A bit set/reset register (GPIOA_BSRR). Address offset: 0x10 *****/
     union

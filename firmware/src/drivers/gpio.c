@@ -8,8 +8,14 @@ static void porta_config()
     RCC.APB2ENR_IOPAEN = BIT_SET;
 
     /* Configure pin 0 of PORT A for gpio output*/
-    GPIOA.CRL_MODE0 = CRL_MODE0_50MHZ;
-    GPIOA.CRL_CNF0 = CRL_CNF0_GPPP;
+    GPIOA.CRL_MODE0 = GPIO_MODE_50MHZ;
+    GPIOA.CRL_CNF0 = GPIO_CNF_GPOPP;
+
+    /* Enable pin 9 and 10 for USART Tx and Rx function */
+    GPIOA.CRH_MODE9 = GPIO_MODE_50MHZ;
+    GPIOA.CRH_CNF9 = GPIO_CNF_AFOPP;
+    GPIOA.CRH_MODE10 = GPIO_MODE_INPUT;
+    GPIOA.CRH_CNF10 = GPIO_CNF_AFIPP;
 }
 
 void gpio_init()
