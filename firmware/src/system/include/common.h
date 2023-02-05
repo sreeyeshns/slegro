@@ -5,6 +5,6 @@ typedef enum
 {
     BIT_CLEAR,
     BIT_SET
-}bit_state_t;
+}BitState_Type;
 
 #endif //_COMMON_H

@@ -3,6 +3,6 @@
 
 #include <serial.h>
 #define SERIAL_CHANNEL_CONSOLE          SERIAL_CHANNEL1
-#define console_write(data, data_len)   serial_send_data(SERIAL_CHANNEL_CONSOLE,data, data_len)
+#define ConsoleWrite(Data, DataLen)     SerialSendData(SERIAL_CHANNEL_CONSOLE, Data, DataLen)
 
 #endif //_SYSTEM_H

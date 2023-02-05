@@ -5,8 +5,10 @@
 #define PCLK1       36000000 /* APB1 clock frequency 36Mhz */
 #define PCLK2       72000000 /* APB2 clock frequency 72Mhz */
 
+#define RCC         ((RCC_Type)0x40021000)
+
 /* RCC Register mapping*/
-struct
+typedef struct
 {
     /***** Clock control register (RCC_CR). Address offset: 0x00 *****/
     union
@@ -75,12 +77,12 @@ struct
 #define APB2ENR                _APB2ENR.APB2ENR
 #define APB2ENR_IOPAEN         _APB2ENR.bits.IOPAEN
 #define APB2ENR_USART1EN       _APB2ENR.bits.USART1EN
-}extern RCC;
+}*RCC_Type;
 
 /*
  * Initializes the PLL module and multiplies the clock frequency so that
  * the CPU runs at 72Mhz
  */
-void sysclk_init(void);
+void SystemInit(void);
 
 #endif /* _SYSCLK_H */

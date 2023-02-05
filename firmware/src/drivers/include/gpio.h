@@ -29,8 +29,10 @@
 #define BIT_NONE                    0x0000UL
 #define BIT_ALL                     0xFFFFUL
 
+#define GPIOA                       ((GPIOA_Type)0x40010800)
+
 /* GPIOA Register mapping*/
-struct
+typedef struct
 {
     /***** Port A configuration register low (GPIOA_CRL). Address offset: 0x00 *****/
     union
@@ -41,11 +43,11 @@ struct
             volatile uint32_t MODE0  :2;
             volatile uint32_t CNF0   :2;
             volatile uint32_t        :28;
-        }bits;
+        }Bits;
     }_CRL;
 #define CRL                 _CRL.CRL
-#define CRL_MODE0           _CRL.bits.MODE0
-#define CRL_CNF0            _CRL.bits.CNF0
+#define CRL_MODE0           _CRL.Bits.MODE0
+#define CRL_CNF0            _CRL.Bits.CNF0
 
 
     /***** Port A configuration register high (GPIOA_CRH). Address offset: 0x04 *****/
@@ -60,13 +62,13 @@ struct
             volatile uint32_t MODE10 :2;
             volatile uint32_t CNF10  :2;
             volatile uint32_t        :20;
-        }bits;
+        }Bits;
     }_CRH;
 #define CRH                 _CRH.CRH
-#define CRH_MODE9           _CRH.bits.MODE9
-#define CRH_CNF9            _CRH.bits.CNF9
-#define CRH_MODE10          _CRH.bits.MODE10
-#define CRH_CNF10           _CRH.bits.CNF10
+#define CRH_MODE9           _CRH.Bits.MODE9
+#define CRH_CNF9            _CRH.Bits.CNF9
+#define CRH_MODE10          _CRH.Bits.MODE10
+#define CRH_CNF10           _CRH.Bits.CNF10
 
     uint32_t unused1[2];   /* Skip the unused registers */
 
@@ -78,20 +80,20 @@ struct
         {
             volatile uint32_t BS     :16;
             volatile uint32_t BR     :16;
-        }bits;
+        }Bits;
     }_BSRR;
 #define BSRR                _BSRR.BSRR
-#define BSRR_BS             _BSRR.bits.BS
-#define BSRR_BR             _BSRR.bits.BR
-}extern GPIOA;
+#define BSRR_BS             _BSRR.Bits.BS
+#define BSRR_BR             _BSRR.Bits.BR
+}*GPIOA_Type;
 
 typedef enum
 {
     PORTA,
     PORTB
-}gpio_port_t;
+}GPIO_Port_Type;
 
-void gpio_init(void);
-void gpio_write_bits(const gpio_port_t port, const uint16_t bits, const bit_state_t state);
+void GPIO_Init(void);
+void GPIO_WriteBits(const GPIO_Port_Type Port, const uint16_t Bits, const BitState_Type State);
 
 #endif //_GPIO_H

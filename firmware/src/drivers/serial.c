@@ -3,29 +3,27 @@
 #include <sysclk.h>
 #include <serial.h>
 
-extern USART_t USART1;
-
-static serial_t serial_channel[SERIAL_CHANNEL_MAX];
+static SerialChannel_Type sSerialChannel[SERIAL_CHANNEL_MAX];
 
 /* Initialize USART */
-static void usart_init(const serial_channel_t channel, const uint32_t baud_rate)
+static void USART_Init(const SerialChannelId_Type Channel, const uint32_t BaudRate)
 {
-    USART_t *USART = NULL;
-    switch(channel)
+    USART_Type USART = NULL;
+    switch(Channel)
     {
         case SERIAL_CHANNEL1:
             /* Enable APB2 clock for USART1 */
-            RCC.APB2ENR_USART1EN = BIT_SET;
-            serial_channel[channel].USART = &USART1;
-            USART = &USART1;
-            serial_channel[SERIAL_CHANNEL1].active = true;
+            RCC->APB2ENR_USART1EN = BIT_SET;
+            sSerialChannel[Channel].USART = USART1;
+            USART = USART1;
+            sSerialChannel[SERIAL_CHANNEL1].active = true;
             break;
         default:
             break;
     }
 
     /* Set the USART baud rate */
-    USART->BRR = PCLK2 / baud_rate;
+    USART->BRR = PCLK2 / BaudRate;
 
     /* Enable USART Rx */
     USART->CR1_RE = BIT_SET;
@@ -38,34 +36,34 @@ static void usart_init(const serial_channel_t channel, const uint32_t baud_rate)
 }
 
 /* Send data through UART1 */
-void serial_send_data(const serial_channel_t channel, uint8_t *data, uint32_t data_len)
+void SerialSendData(const SerialChannelId_Type Channel, uint8_t *pData, uint32_t DataLen)
 {
-    USART_t *USART = serial_channel[channel].USART;
-    for(uint32_t offset = 0; offset < data_len; offset++)
+    USART_Type USART = sSerialChannel[Channel].USART;
+    for(uint32_t Offset = 0; Offset < DataLen; Offset++)
     {
         /* Wait until the transmit data register is empty */
         while (!USART->SR_TXE);
 
         /* Send data */
-        USART->DR = data[offset];
+        USART->DR = pData[Offset];
     }
 }
 
 /* Receive data through UART1 */
-void serial_recv_data(const serial_channel_t channel, uint8_t *data, uint32_t data_len)
+void SerialRecvData(const SerialChannelId_Type Channel, uint8_t *pData, uint32_t DataLen)
 {
-    USART_t *USART = serial_channel[channel].USART;
-    for(uint32_t offset = 0; offset < data_len; offset++)
+    USART_Type USART = sSerialChannel[Channel].USART;
+    for(uint32_t Offset = 0; Offset < DataLen; Offset++)
     {
         // Wait until data is received
         while (!USART->SR_RXNE);
 
         // Return received data
-        data[offset] = USART->DR;
+        pData[Offset] = USART->DR;
     }
 }
 
-void serial_init()
+void SerialInit()
 {
-    usart_init(SERIAL_CHANNEL1, BAUD_RATE_115200);
+    USART_Init(SERIAL_CHANNEL1, BAUD_RATE_115200);
 }
