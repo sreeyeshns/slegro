@@ -12,6 +12,6 @@
 #define MINOR_VERSION   0
 #define PATCH_VERSION   1
 
-#define BUILD_VERSION   "230502A"
+#define BUILD_VERSION   "230601A"
 
 #endif /* _VERSION_H */

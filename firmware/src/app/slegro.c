@@ -16,10 +16,6 @@ int main()
     LOG_INFO("Software version: %d.%d.%d", MINOR_VERSION, MINOR_VERSION, PATCH_VERSION);
     LOG_INFO("Build version: %s", BUILD_VERSION);
 
-    uint8_t Data[5];
-    SerialRecvData(SERIAL_CHANNEL1, Data, 5);
-    SerialSendData(SERIAL_CHANNEL1, Data, 5);
-
 
     while(true)
     {

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <interrupt.h>
 
 #define SERIAL_CHANNEL_MAX      3
 #define BAUD_RATE_9600          9600
@@ -65,7 +66,9 @@ typedef struct
             volatile uint32_t        :2;
             volatile uint32_t RE     :1;
             volatile uint32_t TE     :1;
-            volatile uint32_t        :9;
+            volatile uint32_t        :1;
+            volatile uint32_t RXNEIE :1;
+            volatile uint32_t        :7;
             volatile uint32_t UE     :1;
             volatile uint32_t        :18;
         }Bits;
@@ -73,13 +76,17 @@ typedef struct
 #define CR1                _CR1.CR1
 #define CR1_RE             _CR1.Bits.RE
 #define CR1_TE             _CR1.Bits.TE
+#define CR1_RXNEIE         _CR1.Bits.RXNEIE
 #define CR1_UE             _CR1.Bits.UE
 }*USART_Type;
 
 typedef struct
 {
     bool active;
+    IRQn_Type IRQn;
+    uint8_t IRQprio;
     USART_Type USART;
+    void (*IRQhandler)(void);
 }SerialChannel_Type;
 
 void SerialInit(void);
