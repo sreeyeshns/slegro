@@ -6,64 +6,64 @@
 extern char __heap_start__[];
 extern char __heap_end__[];
 
-void _exit(int32_t status)
+void _exit(int32_t Status)
 {
     while (1);
 }
-void *_sbrk(int32_t incr)
+void *_sbrk(int32_t Incr)
 {
-    static char *heap_end = __heap_start__;
-    char *base = heap_end;
-    if(heap_end + incr > __heap_end__)
+    static char *spHeapEnd = __heap_start__;
+    char *pBase = spHeapEnd;
+    if(spHeapEnd + Incr > __heap_end__)
     {
         errno = ENOMEM;
         return (void *)-1;
     }
-    heap_end += incr;
-    return base;
+    spHeapEnd += Incr;
+    return pBase;
 }
 
-int32_t _isatty(int32_t fd)
+int32_t _isatty(int32_t FD)
 {
     return 1;
 }
 
-int32_t _fstat(int32_t fd, struct stat *st)
+int32_t _fstat(int32_t FD, struct stat *pSt)
 {
-    st->st_mode = S_IFCHR;
+    pSt->st_mode = S_IFCHR;
     return 0;
 }
 
-int32_t _read(int32_t fd, char *ptr, int32_t len)
+int32_t _read(int32_t FD, char *pBuff, int32_t Len)
 {
-    int32_t ret = 0;
-    if(0 == len)
+    int32_t Ret = 0;
+    if(0 == Len)
     {
         return 0;
     }
-    return ret;
+    return Ret;
 }
 
-int32_t _write(int32_t fd, char *ptr, uint32_t len)
+int32_t _write(int32_t fd, char *pBuff, uint32_t Len)
 {
-    int32_t ret = 0;
+    int32_t Ret = 0;
 
-    if(0 == len)
+    if(0 == Len)
     {
         return 0;
     }
 
-    console_write((uint8_t *)ptr, len);
+    ConsoleWrite((uint8_t *)pBuff, Len);
 
-    return ret;
+    return Ret;
 }
 
-off_t _lseek(int32_t fd, off_t offset, int32_t dir)
+off_t _lseek(int32_t FD, off_t Offset, int32_t Dir)
 {
     return 0;
 }
 
-int32_t _close(int32_t fd)
+int32_t _close(int32_t FD)
 {
     return -1;
 }
@@ -75,7 +75,7 @@ int32_t _getpid(void)
 }
 
 /* Bare metal, no processes, so error */
-int32_t _kill(int32_t pid, int32_t sig)
+int32_t _kill(int32_t Pid, int32_t Sig)
 {
     return -1;
 }
